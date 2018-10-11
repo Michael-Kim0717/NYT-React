@@ -1,0 +1,17 @@
+a {
+    font-size: 1vw;
+}
+
+h6 {
+    font-size: 0.75vw;
+}
+
+.favorite {
+    float: right;
+    margin: 20px;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 0px 25px;
+}
