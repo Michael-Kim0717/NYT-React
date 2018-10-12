@@ -7,8 +7,14 @@ var ArticleSchema = new Schema({
         type: String,
         required: true
     },
+    summary: {
+        type: String
+    },
+    writer: {
+        type: String
+    }
     date: {
-        type: Date
+        type: String
     },
     url: {
         type: String,

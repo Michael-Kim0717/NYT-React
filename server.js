@@ -32,9 +32,32 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
+// -------------------- POST and GET calls --------------------
+app.get("/api/articles", function(request, response){
+	console.log(response);
+	db.Article.find({})
+		.then(function(dbArticle){
+			console.log(dbArticle);
+		})
+		.catch(function(error){
+			response.json(error);
+		});
+});
+
+app.post("/api/articles/:id", function(request, response){
+	console.log(request.body);
+	db.Article.create(request.body)
+		.then(function(dbArticle){
+			console.log(dbArticle)
+		})
+		.catch(function(error){
+			response.json(error);
+		});
+});
+
 // -------------------- Start the Server! --------------------
 
 // Start the server
 app.listen(PORT, function() {
-  console.log("Running on " + PORT);
+  	console.log("Running on " + PORT);
 });

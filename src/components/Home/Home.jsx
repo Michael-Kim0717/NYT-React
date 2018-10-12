@@ -17,6 +17,23 @@ class Home extends Component {
         savedArticles: []
     };
 
+    componentDidMount = () => {
+        axios.get("/api/articles")
+            .then(response => {
+                console.log(response.data);
+                this.setState(
+                    {searchArticles : []}
+                );
+                for (let i = 0; i < response.data.response.docs.length; i++){
+                    this.state.searchArticles.push(response.data.response.docs[i]);
+                }
+                this.setState(this.state.searchArticles);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
     findArticles = () => {
         const 
             API_KEY = process.env.NYT_API_KEY || "6c18b0a0124c4b8dac53ce2bfff8a233",
@@ -63,8 +80,23 @@ class Home extends Component {
     }
 
     addToFavorites = article => {
+        console.log(article);
         this.state.savedArticles.push(article);
         this.setState(this.state.savedArticles);
+
+        axios.post("/api/articles/" + article.id, {
+            title: article.title,
+            summary: article.summary,
+            writer: article.writer,
+            date: article.pub_date,
+            url: article.link
+        })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     deleteFromFavorites = article => {
