@@ -19,7 +19,7 @@ class Home extends Component {
 
     findArticles = () => {
         const 
-            API_KEY = "6c18b0a0124c4b8dac53ce2bfff8a233",
+            API_KEY = process.env.NYT_API_KEY || "6c18b0a0124c4b8dac53ce2bfff8a233",
             query = document.getElementById("topicInput").value,
             begin_date = document.getElementById("startYearInput").value,
             end_date = document.getElementById("endYearInput").value,
@@ -62,6 +62,24 @@ class Home extends Component {
         }
     }
 
+    addToFavorites = article => {
+        this.state.savedArticles.push(article);
+        this.setState(this.state.savedArticles);
+    }
+
+    deleteFromFavorites = article => {
+        let indexOfArticle = 0;
+        for (let i = 0; i < this.state.savedArticles.length; i++){
+            if (this.state.savedArticles[i].id === article.id){
+                indexOfArticle = i;
+                break;
+            }
+        }
+
+        this.state.savedArticles.splice(indexOfArticle, 1);
+        this.setState(this.state.savedArticles);
+    }
+
     render() { 
         return (
             <div className="row">
@@ -80,18 +98,23 @@ class Home extends Component {
                     <div className="header">
                         <h4 className="center"> Your Results : </h4>
                     </div>
-                    {this.state.searchArticles.map(article => 
-                        <Result
-                            id={article._id}
-                            key={article._id} 
-                            
-                            link={article.web_url}
-                            pub_date={article.pub_date} 
-                            summary={article.snippet}
-                            title={article.headline.main}
-                            writer={article.byline.original} 
-                        />
-                    )}
+                    <ul>
+                        {this.state.searchArticles.map(article => 
+                            <li key={article._id}>
+                                <Result
+                                    id={article._id} 
+                                    
+                                    addFavorite={this.addToFavorites}
+
+                                    link={article.web_url}
+                                    pub_date={article.pub_date} 
+                                    summary={article.snippet}
+                                    title={article.headline.main}
+                                    writer={article.byline.original} 
+                                />
+                            </li>
+                        )}
+                    </ul>
                 </div>
                 
                 <div className="col s10 offset-s1 box">
@@ -100,14 +123,16 @@ class Home extends Component {
                     </div>
                     {this.state.savedArticles.map(article => 
                         <Saved
-                            id={article._id}
-                            key={article._id} 
+                            id={article.id}
+                            key={article.id} 
+
+                            delFavorite={this.deleteFromFavorites}
                             
-                            link={article.web_url}
+                            link={article.link}
                             pub_date={article.pub_date} 
-                            summary={article.snippet}
-                            title={article.headline.main}
-                            writer={article.byline.original} 
+                            summary={article.summary}
+                            title={article.title}
+                            writer={article.writer} 
                         />
                     )}
                 </div>

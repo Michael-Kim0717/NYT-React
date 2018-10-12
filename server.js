@@ -1,6 +1,7 @@
 // Dependencies
 const 
     bodyParser = require('body-parser'),
+    dotenv = require('dotenv'),
     express = require('express'),
     mongoose = require('mongoose');
     
