@@ -8,6 +8,8 @@ import Saved from "../Saved/Saved";
 /* Stylesheet */
 import "./Home.css";
 
+/* Others */
+import API from "../../utils/API"
 import axios from 'axios';
 
 class Home extends Component {
@@ -17,21 +19,14 @@ class Home extends Component {
         savedArticles: []
     };
 
-    componentDidMount = () => {
-        axios.get("/api/articles")
-            .then(response => {
-                console.log(response.data);
-                this.setState(
-                    {searchArticles : []}
-                );
-                for (let i = 0; i < response.data.response.docs.length; i++){
-                    this.state.searchArticles.push(response.data.response.docs[i]);
-                }
-                this.setState(this.state.searchArticles);
-            })
-            .catch(error => {
-                console.log(error);
-            })
+    componentDidMount() {
+        this.loadArticles();
+    }
+
+    async loadArticles() {
+        const result = await API.getArticlesFromDB();
+        console.log(result.data);
+        this.setState({savedArticles: result.data});
     }
 
     findArticles = () => {
@@ -81,35 +76,24 @@ class Home extends Component {
 
     addToFavorites = article => {
         console.log(article);
-        this.state.savedArticles.push(article);
-        this.setState(this.state.savedArticles);
 
-        axios.post("/api/articles/" + article.id, {
+        API.postArticleToDB({
             title: article.title,
             summary: article.summary,
             writer: article.writer,
             date: article.pub_date,
             url: article.link
         })
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        
+        this.loadArticles();
+            
     }
 
     deleteFromFavorites = article => {
-        let indexOfArticle = 0;
-        for (let i = 0; i < this.state.savedArticles.length; i++){
-            if (this.state.savedArticles[i].id === article.id){
-                indexOfArticle = i;
-                break;
-            }
-        }
-
-        this.state.savedArticles.splice(indexOfArticle, 1);
-        this.setState(this.state.savedArticles);
+        console.log(article);
+        API.removeArticleFromDB(article);
+    
+        this.loadArticles();
     }
 
     render() { 
@@ -155,13 +139,13 @@ class Home extends Component {
                     </div>
                     {this.state.savedArticles.map(article => 
                         <Saved
-                            id={article.id}
-                            key={article.id} 
+                            id={article._id}
+                            key={article._id} 
 
                             delFavorite={this.deleteFromFavorites}
                             
-                            link={article.link}
-                            pub_date={article.pub_date} 
+                            link={article.url}
+                            pub_date={article.date} 
                             summary={article.summary}
                             title={article.title}
                             writer={article.writer} 

@@ -12,17 +12,15 @@ var ArticleSchema = new Schema({
     },
     writer: {
         type: String
-    }
+    }, 
     date: {
         type: String
     },
     url: {
-        type: String,
         required: true,
+        type: String,
         unique: true
     }
 });
 
-var Article = mongoose.model("Article", ArticleSchema);
-
-module.exports = Article;
+module.exports = mongoose.model("articles", ArticleSchema);
