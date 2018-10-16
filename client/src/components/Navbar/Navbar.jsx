@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 /* Stylesheet */
-import "./Navbar.css"
+import "../../style.css"
 
 class Navbar extends Component {
     state = { 

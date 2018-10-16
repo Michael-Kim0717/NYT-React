@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 
-import "./Result.css"
+import "../../style.css"
 
 class Result extends Component {
-    state = {
-
-    };
-
     addToFavorites = () => {
         this.props.addFavorite(this.props);
     }

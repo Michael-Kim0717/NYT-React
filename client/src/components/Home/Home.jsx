@@ -6,7 +6,7 @@ import Result from "../Result/Result";
 import Saved from "../Saved/Saved";
 
 /* Stylesheet */
-import "./Home.css";
+import "../../style.css";
 
 /* Others */
 import API from "../../utils/API"
@@ -25,7 +25,6 @@ class Home extends Component {
 
     async loadArticles() {
         const result = await API.getArticlesFromDB();
-        console.log(result.data);
         this.setState({savedArticles: result.data});
     }
 
@@ -63,10 +62,11 @@ class Home extends Component {
                     this.setState(
                         {searchArticles : []}
                     );
+                    let searchedArticles = [];
                     for (let i = 0; i < response.data.response.docs.length; i++){
-                        this.state.searchArticles.push(response.data.response.docs[i]);
+                        searchedArticles.push(response.data.response.docs[i]);
                     }
-                    this.setState(this.state.searchArticles);
+                    this.setState( {searchArticles : searchedArticles} );
                 })
         }
         else {
@@ -75,8 +75,6 @@ class Home extends Component {
     }
 
     addToFavorites = article => {
-        console.log(article);
-
         API.postArticleToDB({
             title: article.title,
             summary: article.summary,
@@ -86,11 +84,9 @@ class Home extends Component {
         })
         
         this.loadArticles();
-            
     }
 
     deleteFromFavorites = article => {
-        console.log(article);
         API.removeArticleFromDB(article);
     
         this.loadArticles();
@@ -99,7 +95,7 @@ class Home extends Component {
     render() { 
         return (
             <div className="row">
-                <div className="col s12 m3 offset-m1 box" id="search">
+                <div className="col s10 m3 offset-s1 offset-m1 box" id="search">
                     <div className="header">
                         <h4 className="center"> Find an Article that Interests You! </h4>
                     </div>
@@ -110,15 +106,16 @@ class Home extends Component {
                         <button className="btn" id="searchButton" onClick={this.findArticles}> Search </button>
                     </div>
                 </div>
-                <div className="col s12 m6 offset-m1 box" id="results">
+                <div className="col s10 m6 offset-s1 offset-m1 box" id="results">
                     <div className="header">
                         <h4 className="center"> Your Results : </h4>
                     </div>
                     <ul>
                         {this.state.searchArticles.map(article => 
-                            <li key={article._id}>
+                            <li>
                                 <Result
-                                    id={article._id} 
+                                    id={article._id}
+                                    key={article._id}
                                     
                                     addFavorite={this.addToFavorites}
 
